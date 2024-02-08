@@ -1,0 +1,27 @@
+<launch>
+
+  <arg name="urdf" />
+  <arg name="save_meshpath" default="/tmp/robot.stl" />
+
+  <param name="robot_description"
+         textfile="$(arg urdf)" />
+
+  <node name="joint_state_publisher_gui"
+        pkg="joint_state_publisher_gui" type="joint_state_publisher_gui" />
+
+  <node name="robot_state_publisher"
+        pkg="robot_state_publisher" type="robot_state_publisher" />
+
+  <node name="mesh_saver"
+        pkg="urdf_mesh_converter" type="mesh_saver.py"
+        output="screen" >
+    <rosparam subst_value="true" >
+      save_meshpath: $(arg save_meshpath)
+    </rosparam>
+  </node>
+
+  <node name="rviz"
+        pkg="rviz" type="rviz"
+        args="-d $(find urdf_mesh_converter)/launch/rviz/save_mesh.rviz" />
+
+</launch>
